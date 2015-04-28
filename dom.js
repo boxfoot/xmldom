@@ -405,6 +405,7 @@ function _xmlEncoder(c){
          c == '>' && '&gt;' ||
          c == '&' && '&amp;' ||
          c == '"' && '&quot;' ||
+         c == '\'' && '&apos;' ||
          '&#'+c.charCodeAt()+';'
 }
 
@@ -922,7 +923,7 @@ function serializeToString(node,buf){
 		for(var i=0;i<len;i++){
 			serializeToString(attrs.item(i),buf,isHTML);
 		}
-		if(child || isHTML && !/^(?:meta|link|img|br|hr|input|button)$/i.test(nodeName)){
+		if(!(isHTML && !/^(?:meta|link|img|br|hr|input)$/i.test(nodeName))){
 			buf.push('>');
 			//if is cdata child node
 			if(isHTML && /^script$/i.test(nodeName)){
@@ -951,7 +952,7 @@ function serializeToString(node,buf){
 	case ATTRIBUTE_NODE:
 		return buf.push(' ',node.name,'="',node.value.replace(/[<&"]/g,_xmlEncoder),'"');
 	case TEXT_NODE:
-		return buf.push(node.data.replace(/[<&]/g,_xmlEncoder));
+		return buf.push(node.data.replace(/[<>&"']/g,_xmlEncoder));
 	case CDATA_SECTION_NODE:
 		return buf.push( '<![CDATA[',node.data,']]>');
 	case COMMENT_NODE:
