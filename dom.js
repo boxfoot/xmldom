@@ -923,7 +923,9 @@ function serializeToString(node,buf){
 		for(var i=0;i<len;i++){
 			serializeToString(attrs.item(i),buf,isHTML);
 		}
-		if(!(isHTML && !/^(?:meta|link|img|br|hr|input)$/i.test(nodeName))){
+		// SF-style: searchLayouts is a self-closing element
+		var SELF_CLOSING_ELEMENTS = /^(?:meta|link|img|br|hr|input|searchLayouts)$/i
+		if(child || !SELF_CLOSING_ELEMENTS.test(nodeName)){
 			buf.push('>');
 			//if is cdata child node
 			if(isHTML && /^script$/i.test(nodeName)){
